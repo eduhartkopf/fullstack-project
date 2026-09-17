@@ -1,98 +1,400 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Full Stack Store Management System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema de gestión integral para un comercio dedicado a la **venta de accesorios para celulares, productos electrónicos y servicio técnico/reparación de dispositivos móviles**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+El proyecto está siendo desarrollado como una aplicación **Full Stack**, con una arquitectura orientada a separar responsabilidades entre frontend, backend y persistencia de datos.
 
-## Description
+> **Status:** 🚧 En desarrollo activo
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 🎯 Objetivo
 
-```bash
-$ npm install
+El objetivo del proyecto es desarrollar una aplicación que permita gestionar las operaciones principales de un comercio, incluyendo:
+
+- Gestión de productos.
+- Control de stock.
+- Gestión de precios.
+- Registro y consulta de productos.
+- Gestión de servicios de reparación.
+- Administración de clientes.
+- Carritos y ventas.
+- Persistencia de información.
+- Futuramente, reportes y funcionalidades administrativas.
+
+Además del objetivo funcional, el proyecto está siendo utilizado como una instancia práctica para profundizar conocimientos de **TypeScript, NestJS, React, bases de datos relacionales, ORM y arquitectura de aplicaciones Full Stack**.
+
+---
+
+## 🛠️ Stack tecnológico
+
+### Backend
+
+- **Node.js**
+- **NestJS**
+- **TypeScript**
+- **TypeORM**
+- **SQLite**
+- **better-sqlite3**
+- **class-validator**
+- **class-transformer**
+
+### Frontend
+
+- **React**
+- **TypeScript**
+
+### Herramientas
+
+- Git
+- GitHub
+- VS Code
+- npm
+
+---
+
+## 🏗️ Arquitectura
+
+La aplicación está siendo construida utilizando una arquitectura por capas.
+
+```text
+┌───────────────────────────────┐
+│           React               │
+│          Frontend             │
+└───────────────┬───────────────┘
+                │ HTTP
+                ▼
+┌───────────────────────────────┐
+│          NestJS               │
+│           Backend             │
+│                               │
+│  Controller → Service         │
+│                 ↓             │
+│             Repository        │
+└────────────────┬──────────────┘
+                 │
+                 ▼
+┌───────────────────────────────┐
+│           TypeORM             │
+└────────────────┬──────────────┘
+                 │
+                 ▼
+┌───────────────────────────────┐
+│            SQLite             │
+│       database.sqlite         │
+└───────────────────────────────┘
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+# 🚀 Backend
 
-# watch mode
-$ npm run start:dev
+El backend está desarrollado con **NestJS + TypeScript**.
 
-# production mode
-$ npm run start:prod
+Actualmente existe un módulo dedicado a productos:
+
+```text
+src/
+├── app.module.ts
+├── main.ts
+└── products/
+    ├── dto/
+    │   └── create-product.dto.ts
+    ├── entities/
+    │   └── product.entity.ts
+    ├── products.controller.ts
+    ├── products.service.ts
+    └── products.module.ts
 ```
 
-## Run tests
+### Products Module
 
-```bash
-# unit tests
-$ npm run test
+El módulo de productos implementa actualmente endpoints para:
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```http
+GET    /products
+GET    /products/:id
+POST   /products
 ```
 
-## Deployment
+El `ProductsController` recibe las peticiones HTTP y delega la lógica al `ProductsService`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```text
+HTTP Request
+     ↓
+ProductsController
+     ↓
+ProductsService
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+# 🧱 DTO y validación
 
-Check out a few resources that may come in handy when working with NestJS:
+Para la creación de productos se utiliza un DTO:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```text
+CreateProductDto
+```
 
-## Support
+El DTO define y valida los datos recibidos por la API.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Actualmente un producto contempla:
 
-## Stay in touch
+| Campo   | Tipo   | Descripción         |
+| ------- | ------ | ------------------- |
+| `name`  | string | Nombre del producto |
+| `price` | number | Precio              |
+| `stock` | number | Stock disponible    |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+La validación se realiza mediante **class-validator**.
 
-## License
+Esto permite evitar que información inválida llegue a la lógica de negocio.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+# 🗄️ Persistencia con SQLite + TypeORM
+
+La persistencia de datos comenzó inicialmente utilizando un array en memoria durante las primeras etapas del desarrollo.
+
+Actualmente el proyecto está migrando a una solución de persistencia real utilizando:
+
+- SQLite
+- TypeORM
+- better-sqlite3
+
+La base de datos local se encuentra en:
+
+```text
+database.sqlite
+```
+
+Este archivo **no forma parte del repositorio Git**, ya que está excluido mediante `.gitignore`.
+
+---
+
+## Entity
+
+La entidad `Product` representa la estructura de los productos en la base de datos.
+
+```text
+Product Entity
+      ↓
+   TypeORM
+      ↓
+products table
+      ↓
+SQLite
+```
+
+La Entity define actualmente:
+
+- `id`
+- `name`
+- `price`
+- `stock`
+
+El identificador utiliza:
+
+```typescript
+@PrimaryGeneratedColumn()
+```
+
+por lo que el ID es generado automáticamente.
+
+---
+
+## Repository
+
+TypeORM proporciona un `Repository<Product>` para realizar las operaciones sobre la entidad.
+
+La arquitectura de acceso a datos queda planteada de la siguiente manera:
+
+```text
+ProductsService
+      ↓
+Repository<Product>
+      ↓
+TypeORM
+      ↓
+SQLite
+```
+
+Esto permite separar la lógica de negocio del acceso directo a la base de datos.
+
+---
+
+# 🔐 Configuración
+
+La conexión de TypeORM se configura desde `AppModule`.
+
+Actualmente SQLite se utiliza como base de datos local para simplificar el desarrollo y permitir una persistencia real sin requerir un servidor de base de datos externo.
+
+Durante esta etapa de desarrollo se utiliza:
+
+```typescript
+synchronize: true;
+```
+
+para permitir que TypeORM sincronice automáticamente la estructura de las entidades con la base de datos.
+
+> Esta configuración está destinada al entorno de desarrollo y deberá revisarse antes de utilizar el sistema en producción.
+
+---
+
+# 📦 Estado actual
+
+### Backend
+
+- [x] Proyecto NestJS creado
+- [x] TypeScript configurado
+- [x] Products Module
+- [x] Products Controller
+- [x] Products Service
+- [x] DTO para creación de productos
+- [x] Validación mediante `class-validator`
+- [x] Product Entity
+- [x] TypeORM integrado
+- [x] SQLite integrado
+- [x] `better-sqlite3` instalado
+- [x] Repository de Product preparado
+- [x] Base de datos SQLite creada
+- [x] Proyecto versionado con Git
+- [x] Repositorio remoto en GitHub
+
+### Frontend
+
+- [ ] Inicialización del frontend React
+- [ ] Diseño de interfaz
+- [ ] Conexión con API
+- [ ] Gestión de productos
+- [ ] Gestión de stock
+
+---
+
+# 🗺️ Roadmap
+
+El proyecto continuará evolucionando progresivamente.
+
+## Backend
+
+### Productos
+
+- [ ] Completar persistencia CRUD con SQLite.
+- [ ] Actualizar productos.
+- [ ] Eliminar productos.
+- [ ] Manejo de errores y respuestas HTTP.
+- [ ] Mejorar DTOs.
+- [ ] Implementar búsqueda y filtros.
+- [ ] Control de stock.
+
+### Clientes
+
+- [ ] Crear módulo de clientes.
+- [ ] Entity de clientes.
+- [ ] CRUD de clientes.
+- [ ] Relación entre clientes y reparaciones/ventas.
+
+### Reparaciones
+
+- [ ] Crear módulo de reparaciones.
+- [ ] Registro de dispositivos.
+- [ ] Estado de reparación.
+- [ ] Diagnóstico.
+- [ ] Presupuesto.
+- [ ] Historial.
+- [ ] Relación con clientes.
+
+### Ventas
+
+- [ ] Carrito de compra.
+- [ ] Registro de ventas.
+- [ ] Detalle de venta.
+- [ ] Actualización automática de stock.
+
+---
+
+# 🖥️ Frontend
+
+Una vez consolidado el backend, se desarrollará la interfaz utilizando React.
+
+La aplicación tendrá como objetivo proporcionar una interfaz para:
+
+- Dashboard.
+- Productos.
+- Stock.
+- Clientes.
+- Reparaciones.
+- Ventas.
+- Carritos.
+- Reportes.
+
+La comunicación entre frontend y backend se realizará mediante una API HTTP.
+
+---
+
+# 🧪 Testing
+
+El proyecto incluye la estructura inicial de testing proporcionada por NestJS.
+
+A medida que avance el desarrollo se incorporarán:
+
+- Unit tests.
+- Tests de servicios.
+- Tests de controllers.
+- Tests de integración.
+- Tests end-to-end.
+
+---
+
+# 📁 Git & Version Control
+
+El proyecto utiliza Git para el control de versiones.
+
+El repositorio remoto se encuentra en:
+
+**GitHub — `eduhartkopf/fullstack-project`**
+
+El proyecto utiliza una estrategia de commits descriptivos para registrar la evolución de las funcionalidades.
+
+Los archivos de base de datos SQLite y otros archivos locales no forman parte del repositorio mediante `.gitignore`.
+
+---
+
+# 📚 Objetivo de aprendizaje
+
+Este proyecto no está planteado únicamente como una aplicación CRUD.
+
+Se utiliza como proyecto práctico para profundizar progresivamente en conceptos de desarrollo profesional:
+
+- JavaScript y TypeScript.
+- Programación orientada a objetos.
+- NestJS.
+- Arquitectura modular.
+- Dependency Injection.
+- DTOs.
+- Validación.
+- Controllers.
+- Services.
+- Repositories.
+- ORM.
+- SQL y bases de datos relacionales.
+- SQLite.
+- APIs REST.
+- React.
+- Integración Frontend/Backend.
+- Testing.
+- Git y GitHub.
+- Buenas prácticas de arquitectura y desarrollo.
+
+La intención es que cada nueva funcionalidad se incorpore entendiendo **por qué se implementa de esa manera**, no solamente utilizando abstracciones o frameworks sin comprender su funcionamiento.
+
+---
+
+## 🚧 Development Status
+
+Este proyecto se encuentra actualmente en **desarrollo**.
+
+La primera etapa del backend ya cuenta con la estructura base de NestJS y una transición desde almacenamiento en memoria hacia persistencia utilizando **TypeORM + SQLite**.
+
+El próximo objetivo es completar la integración del `Repository<Product>` y terminar el CRUD persistente de productos antes de comenzar a ampliar el sistema con nuevas áreas funcionales.
