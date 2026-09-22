@@ -95,11 +95,13 @@ Actualmente existe un módulo dedicado a productos:
 
 ```text
 src/
+
 ├── app.module.ts
 ├── main.ts
 └── products/
     ├── dto/
-    │   └── create-product.dto.ts
+    │   ├── create-product.dto.ts
+    │   └── update-product.dto.ts
     ├── entities/
     │   └── product.entity.ts
     ├── products.controller.ts
@@ -109,12 +111,14 @@ src/
 
 ### Products Module
 
-El módulo de productos implementa actualmente endpoints para:
+El módulo de productos implementa actualmente un **CRUD persistente completo** mediante SQLite + TypeORM:
 
 ```http
-GET    /products
-GET    /products/:id
-POST   /products
+GET     /products
+GET     /products/:id
+POST    /products
+PATCH   /products/:id
+DELETE  /products/:id
 ```
 
 El `ProductsController` recibe las peticiones HTTP y delega la lógica al `ProductsService`.
@@ -125,19 +129,33 @@ HTTP Request
 ProductsController
      ↓
 ProductsService
+     ↓
+Repository<Product>
+     ↓
+TypeORM
+     ↓
+SQLite
 ```
 
 ---
 
 # 🧱 DTO y validación
 
-Para la creación de productos se utiliza un DTO:
+Para la creación de productos se utiliza:
 
 ```text
 CreateProductDto
 ```
 
-El DTO define y valida los datos recibidos por la API.
+Para la actualización parcial de productos se utiliza:
+
+```text
+UpdateProductDto
+```
+
+El `CreateProductDto` define y valida los datos necesarios para crear un producto.
+
+El `UpdateProductDto` permite realizar actualizaciones parciales mediante `PATCH`, haciendo que los campos sean opcionales y validándolos cuando están presentes.
 
 Actualmente un producto contempla:
 
@@ -147,7 +165,7 @@ Actualmente un producto contempla:
 | `price` | number | Precio              |
 | `stock` | number | Stock disponible    |
 
-La validación se realiza mediante **class-validator**.
+La validación se realiza mediante **class-validator** y la transformación de datos mediante **class-transformer**.
 
 Esto permite evitar que información inválida llegue a la lógica de negocio.
 
@@ -157,7 +175,7 @@ Esto permite evitar que información inválida llegue a la lógica de negocio.
 
 La persistencia de datos comenzó inicialmente utilizando un array en memoria durante las primeras etapas del desarrollo.
 
-Actualmente el proyecto está migrando a una solución de persistencia real utilizando:
+Actualmente el proyecto utiliza una solución de persistencia real mediante:
 
 - SQLite
 - TypeORM
@@ -179,12 +197,12 @@ La entidad `Product` representa la estructura de los productos en la base de dat
 
 ```text
 Product Entity
-      ↓
-   TypeORM
-      ↓
-products table
-      ↓
-SQLite
+     ↓
+  TypeORM
+     ↓
+ products table
+     ↓
+   SQLite
 ```
 
 La Entity define actualmente:
@@ -212,15 +230,96 @@ La arquitectura de acceso a datos queda planteada de la siguiente manera:
 
 ```text
 ProductsService
-      ↓
+     ↓
 Repository<Product>
-      ↓
+     ↓
 TypeORM
-      ↓
+     ↓
 SQLite
 ```
 
+El Repository se utiliza para realizar las operaciones de persistencia del CRUD:
+
+- `find()`
+- `findOne()`
+- `create()`
+- `preload()`
+- `save()`
+- `remove()`
+
 Esto permite separar la lógica de negocio del acceso directo a la base de datos.
+
+---
+
+# 🔄 CRUD de productos
+
+El módulo `Products` cuenta actualmente con las operaciones básicas de un CRUD persistente.
+
+### Create
+
+```http
+POST /products
+```
+
+Permite crear un nuevo producto y almacenarlo en SQLite.
+
+### Read
+
+```http
+GET /products
+```
+
+Obtiene todos los productos.
+
+```http
+GET /products/:id
+```
+
+Obtiene un producto específico mediante su ID.
+
+### Update
+
+```http
+PATCH /products/:id
+```
+
+Permite actualizar parcialmente un producto.
+
+El `UpdateProductDto` permite enviar solamente los campos que se desean modificar.
+
+La actualización utiliza:
+
+```text
+preload()
+    ↓
+Producto actualizado en memoria
+    ↓
+save()
+    ↓
+SQLite
+```
+
+### Delete
+
+```http
+DELETE /products/:id
+```
+
+Busca el producto mediante su ID y lo elimina de SQLite utilizando el Repository.
+
+### Manejo de errores
+
+El backend utiliza `NotFoundException` para manejar solicitudes sobre productos que no existen.
+
+Ejemplo:
+
+```json
+{
+  "message": "Producto no encontrado",
+  "error": "Not Found",
+  "statusCode": 404
+}
+```
 
 ---
 
@@ -252,6 +351,7 @@ para permitir que TypeORM sincronice automáticamente la estructura de las entid
 - [x] Products Controller
 - [x] Products Service
 - [x] DTO para creación de productos
+- [x] DTO para actualización parcial de productos
 - [x] Validación mediante `class-validator`
 - [x] Product Entity
 - [x] TypeORM integrado
@@ -259,6 +359,13 @@ para permitir que TypeORM sincronice automáticamente la estructura de las entid
 - [x] `better-sqlite3` instalado
 - [x] Repository de Product preparado
 - [x] Base de datos SQLite creada
+- [x] Crear productos
+- [x] Consultar todos los productos
+- [x] Consultar productos por ID
+- [x] Actualizar productos
+- [x] Eliminar productos
+- [x] Manejo de errores para productos inexistentes
+- [x] CRUD persistente de productos completado
 - [x] Proyecto versionado con Git
 - [x] Repositorio remoto en GitHub
 
@@ -280,11 +387,11 @@ El proyecto continuará evolucionando progresivamente.
 
 ### Productos
 
-- [ ] Completar persistencia CRUD con SQLite.
-- [ ] Actualizar productos.
-- [ ] Eliminar productos.
-- [ ] Manejo de errores y respuestas HTTP.
-- [ ] Mejorar DTOs.
+- [x] Completar persistencia CRUD con SQLite.
+- [x] Actualizar productos.
+- [x] Eliminar productos.
+- [x] Manejo de errores y respuestas HTTP.
+- [x] Mejorar DTOs.
 - [ ] Implementar búsqueda y filtros.
 - [ ] Control de stock.
 
@@ -395,6 +502,6 @@ La intención es que cada nueva funcionalidad se incorpore entendiendo **por qu�
 
 Este proyecto se encuentra actualmente en **desarrollo**.
 
-La primera etapa del backend ya cuenta con la estructura base de NestJS y una transición desde almacenamiento en memoria hacia persistencia utilizando **TypeORM + SQLite**.
+La primera etapa del backend cuenta con la estructura base de NestJS, persistencia mediante **TypeORM + SQLite** y un **CRUD completo y persistente para productos**.
 
-El próximo objetivo es completar la integración del `Repository<Product>` y terminar el CRUD persistente de productos antes de comenzar a ampliar el sistema con nuevas áreas funcionales.
+El próximo objetivo es ampliar progresivamente el backend con funcionalidades como búsqueda y filtros, control de stock y nuevos módulos para clientes, reparaciones y ventas.
