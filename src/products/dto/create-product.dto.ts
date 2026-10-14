@@ -22,4 +22,11 @@ export class CreateProductDto {
   @IsInt()
   @Type(() => Number)
   stock: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsInt()
+  @IsNotEmpty()
+  @Type(() => Number)
+  categoryId: number;
 }

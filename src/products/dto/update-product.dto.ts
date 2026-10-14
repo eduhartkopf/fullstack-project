@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -26,4 +27,10 @@ export class UpdateProductDto {
   @IsInt()
   @Type(() => Number)
   stock?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  categoryId?: number;
 }
