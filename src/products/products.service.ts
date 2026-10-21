@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -84,6 +88,16 @@ export class ProductsService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
+    if (
+      Object.values(updateProductDto).every(
+        (value) => value === undefined || value === null,
+      )
+    ) {
+      throw new BadRequestException(
+        'Debes enviar al menos un campo para actualizar el producto',
+      );
+    }
+
     const product = await this.productRepository.findOne({
       where: {
         id: Number(id),
