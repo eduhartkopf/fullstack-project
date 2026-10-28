@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { Product } from '../products/entities/product.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -51,5 +52,29 @@ export class CategoryService {
     }
 
     return this.categoryRepository.remove(category);
+  }
+
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    if (
+      Object.values(updateCategoryDto).every(
+        (value) => value === undefined || value === null,
+      )
+    ) {
+      throw new BadRequestException(
+        'Debes enviar al menos un campo para actualizar la categoría',
+      );
+    }
+
+    const category = await this.categoryRepository.findOne({
+      where: { id: Number(id) },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Categoría con id ${id} no encontrada`);
+    }
+
+    Object.assign(category, updateCategoryDto);
+
+    return this.categoryRepository.save(category);
   }
 }
