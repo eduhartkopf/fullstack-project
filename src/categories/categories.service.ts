@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
+import { Product } from '../products/entities/product.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
@@ -9,6 +14,9 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   findAll() {
@@ -19,5 +27,29 @@ export class CategoryService {
     const newCategory = this.categoryRepository.create(createCategoryDto);
 
     return this.categoryRepository.save(newCategory);
+  }
+
+  async remove(id: string) {
+    const category = await this.categoryRepository.findOne({
+      where: { id: Number(id) },
+    });
+
+    if (!category) {
+      throw new NotFoundException(`Categoría con id ${id} no encontrada`);
+    }
+
+    const productCount = await this.productRepository.count({
+      where: {
+        category: { id: category.id },
+      },
+    });
+
+    if (productCount > 0) {
+      throw new BadRequestException(
+        'No se puede eliminar una categoría que tiene productos asociados',
+      );
+    }
+
+    return this.categoryRepository.remove(category);
   }
 }
